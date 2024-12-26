@@ -1,9 +1,9 @@
 streamlit
+up
 tensorflow
 keras
 opencv-python
 matplotlib
 numpy
-os
 warnings
 request
