@@ -11,7 +11,6 @@ from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from tensorflow.keras.callbacks import ReduceLROnPlateau, EarlyStopping
 import matplotlib.pyplot as plt
 import requests
-import cv2
 
 # Suppress warnings
 warnings.filterwarnings("ignore")
@@ -155,44 +154,22 @@ def run():
         st.write("Upload an image to check if it contains a tumor.")
 
         # Image Upload Section
-        choose = st.radio("",options=["Local Image","Url Image"])
-        if choose == "Local Image":
-            uploaded_file = st.file_uploader("Choose an image...", type=["jpg", "jpeg", "png", "bmp"])
-            if uploaded_file is not None:
-                # Save the uploaded image temporarily
-                img_path = f"temp_image.{uploaded_file.name.split('.')[-1]}"
-                with open(img_path, "wb") as f:
-                    f.write(uploaded_file.getbuffer())
-                # Load the model (or train if not exists)
-                model, _ = load_or_train_model()
-                # Predict the tumor presence
-                with st.spinner('Making prediction...'):
-                    result = predict_tumor(model, img_path)
-                st.success('Prediction complete !')
+        uploaded_file = st.file_uploader("Choose an image...", type=["jpg", "jpeg", "png", "bmp"])
+        if uploaded_file is not None:
+            # Save the uploaded image temporarily
+            img_path = f"temp_image.{uploaded_file.name.split('.')[-1]}"
+            with open(img_path, "wb") as f:
+                f.write(uploaded_file.getbuffer())
+            # Load the model (or train if not exists)
+            model, _ = load_or_train_model()
+            # Predict the tumor presence
+            with st.spinner('Making prediction...'):
+                result = predict_tumor(model, img_path)
+            st.success('Prediction complete !')
 
-                # Display the result
-                st.image(uploaded_file, caption='Uploaded Image')
-                st.write(result)
-        elif choose == "Url Image":
-            path = st.text_input("URL Image")
-            if path:
-                response = requests.get(path)
-                img_path = "image.jpeg"
-                with open(img_path, 'wb') as out_file:
-                    for chunk in response.iter_content(1024):
-                        out_file.write(chunk)
-                uploaded_file = cv2.imread(img_path)
-                uploaded_file = cv2.cvtColor(uploaded_file,cv2.COLOR_BGR2RGB)
-                # Load the model (or train if not exists)
-                model, _ = load_or_train_model()
-                # Predict the tumor presence
-                with st.spinner('Making prediction...'):
-                    result = predict_tumor(model, img_path)
-                st.success('Prediction complete !')
-
-                # Display the result
-                st.image(uploaded_file, caption='Uploaded Image')
-                st.write(result)
+            # Display the result
+            st.image(uploaded_file, caption='Uploaded Image')
+            st.write(result)
 
 
         # Add a button to retrain the model
