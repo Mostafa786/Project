@@ -5,5 +5,4 @@ keras
 opencv-python
 matplotlib
 numpy
-warnings
 request
