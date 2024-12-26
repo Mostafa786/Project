@@ -1,5 +1,4 @@
 streamlit
-up
 tensorflow
 keras
 opencv-python
